@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.24)
+project(InspectConsumer LANGUAGES CXX)
+find_package(MachOInspect 1 CONFIG REQUIRED)
+add_executable(inspect-consumer main.cpp)
+target_link_libraries(inspect-consumer PRIVATE MachOInspect::macho_inspect)

@@ -1,0 +1,201 @@
+{
+  "project": "MachOInspect",
+  "version": "1.0.0",
+  "files": [
+    {
+      "path": ".gitignore",
+      "bytes": 39,
+      "sha256": "6b5c4f91063c2624c84dceec4f07fabb993bd874cfdfb34426e93268c47f0a6f"
+    },
+    {
+      "path": "CMakeLists.txt",
+      "bytes": 4203,
+      "sha256": "6b3f138b39b0c4be9b7057e774d4e785bcdbb56c34bbf4c83280daa232fcffb2"
+    },
+    {
+      "path": "CMakePresets.json",
+      "bytes": 853,
+      "sha256": "12534abeb031402cfe87a550ed64051c8fa9dd7fb8527fe39bc0b813acbf4d46"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1110,
+      "sha256": "8e6076dc7cde7d9eee333f9f703c59079b56475010c9b847b99a94288c2551d6"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4602,
+      "sha256": "61961528adff16a81364f778074e6101441c0619fd38645b366116b5f4e50f87"
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "bytes": 1363,
+      "sha256": "e99aeedde745ed0b8359e061f834bdeaae45daeb7dcbd2382a11e42b83d617ef"
+    },
+    {
+      "path": "app/command_line.cpp",
+      "bytes": 6022,
+      "sha256": "a4f76fd807b5bf8b9802038d9f4a51a55a40bfb23408f40fcaa310eb9aa4cddc"
+    },
+    {
+      "path": "cmake/MachOInspectConfig.cmake.in",
+      "bytes": 356,
+      "sha256": "87cda644817ca8bfff2a564fe576eb9c9e84134638a42d098dde75fbb1fd1606"
+    },
+    {
+      "path": "dependencies.lock.json",
+      "bytes": 754,
+      "sha256": "75dcc637e58010ea4f7ac208d3bd81006ab8ae34dbc506da59381610324e1a91"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "bytes": 2819,
+      "sha256": "13980dbdf3ce88ba44c612702fcd34ec30bf4010ee989fb03ad59121a56ef66e"
+    },
+    {
+      "path": "docs/BASELINE_COVERAGE.md",
+      "bytes": 12582,
+      "sha256": "23da1d987b328ce9c382830f6d841a0e2c840419fd49f9da813d373e8b00f156"
+    },
+    {
+      "path": "docs/CLI.md",
+      "bytes": 1712,
+      "sha256": "1d1dd1129a7579a72796d28e2b135c03bab736a2b609e6c514b93ae139b4ac96"
+    },
+    {
+      "path": "docs/FORMAT.md",
+      "bytes": 2933,
+      "sha256": "98ddb9f013170496555a0821ecb96d6782615c01b03fbc6ce70d783a0b5f2875"
+    },
+    {
+      "path": "docs/MIGRATION.md",
+      "bytes": 3171,
+      "sha256": "807fd9319d3343f6302ff2b50ae5f01d08e8e944790d5447989b1a6b8587439b"
+    },
+    {
+      "path": "docs/VERIFICATION.md",
+      "bytes": 5139,
+      "sha256": "5adedd6a4e8f8b07c8692492fff77bb16ca3415c7662b32154b6abab8f0e137d"
+    },
+    {
+      "path": "examples/library-consumer/CMakeLists.txt",
+      "bytes": 239,
+      "sha256": "8c673f0b557e96401a5b9e9233da988d3e461e3abf862017e4e43acc7812eb47"
+    },
+    {
+      "path": "examples/library-consumer/main.cpp",
+      "bytes": 369,
+      "sha256": "b2dbf7d925f50ae901ba1849394c919fb3ced1e50df8bfc9ce6fb5053314c38a"
+    },
+    {
+      "path": "include/macho_inspect/inspection.hpp",
+      "bytes": 6637,
+      "sha256": "5faa9e80ba6a708131d0fc0640426f1291e56d39dfa9f7bd6c5576e2782e9373"
+    },
+    {
+      "path": "licenses/OpenSSL-Apache-2.0.txt",
+      "bytes": 10175,
+      "sha256": "7d5450cb2d142651b8afa315b5f238efc805dad827d91ba367d8516bc9d49e7a"
+    },
+    {
+      "path": "licenses/PCRE2-LICENCE.md",
+      "bytes": 4011,
+      "sha256": "197d8a73ffee0d6b09adba2f9c677b5f5aede24edf89258a68e48248d010d811"
+    },
+    {
+      "path": "licenses/libplist-GPL-2.txt",
+      "bytes": 17988,
+      "sha256": "7619c753cac95d4740220223bde48a032606fcaccde5e546f9bc444c81ab356d"
+    },
+    {
+      "path": "licenses/libplist-LGPL-2.1.txt",
+      "bytes": 26434,
+      "sha256": "e237fa56668030e928551ddd60f05df5fe957f75eab874bbd017e085ed722e7c"
+    },
+    {
+      "path": "licenses/nlohmann-json-MIT.txt",
+      "bytes": 1076,
+      "sha256": "46a65cffd1ea955132d95a8dd921640714a8d6b537d2e4e482d31145ae95b603"
+    },
+    {
+      "path": "src/app/inspection_session.cpp",
+      "bytes": 3955,
+      "sha256": "d9d251a868c7abbc4cda6c47f421cda5977265ca41c0dc9c142146267702a3e5"
+    },
+    {
+      "path": "src/binary/image_catalog.cpp",
+      "bytes": 7803,
+      "sha256": "3b93ac10d4e4a2946dc021642da42547cf8e0884a3d8c29992511911262afdfa"
+    },
+    {
+      "path": "src/bundle/resource_manifest.cpp",
+      "bytes": 16972,
+      "sha256": "5f1eae86311c224d0aed1a1f2cc221ed0ccddc535a3c59c602da1dc5ced5114b"
+    },
+    {
+      "path": "src/claims/entitlement_document.cpp",
+      "bytes": 10881,
+      "sha256": "53c76e1571db44e72e9ac3b44371c1920908c465845c7778fa5ce4b14b2a66ec"
+    },
+    {
+      "path": "src/io/input_source.cpp",
+      "bytes": 5907,
+      "sha256": "b92c0247d207cfc43f2e0a60253f9a4af08f5e6d026ca11a4c5e54d3b5c65d87"
+    },
+    {
+      "path": "src/output/emitters.cpp",
+      "bytes": 12069,
+      "sha256": "401967c2b23bda2a796aa6e9f358229dcb35fd342802761a50ab72d65d062d0f"
+    },
+    {
+      "path": "src/rules/inspection_rules.cpp",
+      "bytes": 12255,
+      "sha256": "4d79e98c25f9569558f71a38636e3c0e10fc6a2b2ca12a02334049724e12c633"
+    },
+    {
+      "path": "src/signing/signing_envelope.cpp",
+      "bytes": 7960,
+      "sha256": "244c2a04f993c2c076b9166eb89080ef584fab473d3f246309e5cd4545d47052"
+    },
+    {
+      "path": "tests/fuzz/parser_driver.cpp",
+      "bytes": 632,
+      "sha256": "0eb225ef5cf686e03293d5601400abd3887af1df5a555e188b3c0a9cc888c6bb"
+    },
+    {
+      "path": "tests/integration/macos_contract.cpp",
+      "bytes": 13523,
+      "sha256": "1a97fc8a73e7c8633c6cfcbacaa478ee76ca3aeaaa3d5b8c828ece3dfd8a1041"
+    },
+    {
+      "path": "tests/unit/boundary_tests.cpp",
+      "bytes": 14951,
+      "sha256": "af28d0aa99818e74c655902e5177c0b7a832968a5a6dfb286be42d2947b12d11"
+    },
+    {
+      "path": "tests/unit/core_tests.cpp",
+      "bytes": 9829,
+      "sha256": "4adfd6a53456e1cacf529175171a2b8dd3c7aa713d1725291c0c90e0cae29651"
+    },
+    {
+      "path": "tests/unit/resource_tests.cpp",
+      "bytes": 9686,
+      "sha256": "a02894c430539589587679ebd6cfd7ae75a2e27edaef2c84b08645ff79c30b18"
+    },
+    {
+      "path": "tests/unit/rule_tests.cpp",
+      "bytes": 9675,
+      "sha256": "f918606069bd82e2ba0a5fdc623beee2a9abf33a26783fb9c3e7997309c18d86"
+    },
+    {
+      "path": "tools/process.hpp",
+      "bytes": 2420,
+      "sha256": "32dbb131b0d136171e3e287880924f8fe17729b402eda79fa4026769b47378da"
+    },
+    {
+      "path": "tools/verify_system.cpp",
+      "bytes": 7586,
+      "sha256": "ee74d5bd1e8c96a35eecf05d11610b1a44c489594187a7cc73607ecc88568216"
+    }
+  ]
+}

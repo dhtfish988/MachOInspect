@@ -1,0 +1,102 @@
+# Verification record
+
+Evidence filenames and workspace-relative paths below refer to local validation records. See `../validation/README.md` for the published summary; raw local logs are not included.
+
+Date: 2026-09-23. Host: macOS 26.7 (25G229), arm64. Product builds use Apple clang
+21.0.0, CMake 4.3.1 and Ninja 1.13.2. The ASan/UBSan and libFuzzer build uses LLVM
+23.1.1 because the installed Apple toolchain has no libFuzzer runtime archive.
+
+The evidence directory in this workspace is `../evidence/machoaudit/`. It contains
+build/test logs, corpus comparison JSON, the baseline inventory and final artifact
+metadata. Claims below concern these local runs; there has been no hosted CI run.
+
+## Recorded checks
+
+| Gate | Recorded result |
+|---|---|
+| Isolated Python baseline | 134 tests passed; original checkout unchanged |
+| Baseline codesign comparison | 2,301 slices compared, 0 mismatches |
+| Baseline entitlement comparison | 947 XML/DER pairs and 481 codesign comparisons, 0 differences |
+| New Debug native suite | Five test programs; 442 checks passed |
+| New Release native suite | 442 checks passed; `tests-release.txt` |
+| New ASan/UBSan native suite | 442 checks passed; `tests-sanitize.txt` |
+| New native codesign comparison | 1,157 Mach-O files; 2,301 metadata comparisons; 883 entitlement comparisons; 0 issues in the final Release run |
+| Normalized new/old comparison | Same system corpus; 0 differences after selecting the strongest supported declared directory |
+| Coverage-guided parser fuzzing | 338,067 executions in 31 seconds; seed 9802, maximum length 65,536; no crash or sanitizer report |
+| Independent installed-library consumer | Configured, linked and inspected `/usr/bin/otool` successfully |
+| Linux build/runtime | OPEN; no Linux runner was available |
+
+The final suites contain 70 core, 26 resource, 92 rule, 204 boundary and 50
+integration assertions. The scenario inventory in `BASELINE_COVERAGE.md` maps
+131 baseline source test functions (134 parameterized cases) to these suites.
+
+Four structural counterexamples were run through both implementations: a fat
+slice exceeding its file, a header exceeding its declared slice, a SuperBlob
+exceeding its command and a child exceeding its SuperBlob. The baseline accepted
+all four; the new Release CLI rejected each with status 2. Exact diagnostics are
+in `baseline-boundary-differences.json`.
+
+On the same 1,157-file corpus with `--summary`, three sequential, alternating-order
+runs gave median whole-process wall times of 0.245161 seconds (Python baseline)
+and 0.246686 seconds (C++ Release). Median peak resident bytes were 203,816,960 and
+243,056,640 respectively. This warm-cache local measurement includes startup and
+uses `/usr/bin/time -l` for resident memory. It establishes no speed advantage;
+the new report retains more detail and its summary currently materializes JSON.
+Raw measurements and methodology are in `performance.json`.
+
+## Reproduce
+
+```sh
+cmake --preset debug
+cmake --build --preset debug
+ctest --preset debug --verbose
+cmake --preset release
+cmake --build --preset release
+ctest --preset release --verbose
+build/release/inspect-verify-system
+```
+
+For a clang installation containing libFuzzer, choose its compiler explicitly:
+
+```sh
+cmake --fresh --preset sanitize \
+  -DCMAKE_CXX_COMPILER=/opt/homebrew/opt/llvm/bin/clang++
+cmake --build --preset sanitize
+ctest --preset sanitize --verbose
+build/sanitize/inspect-boundary-tests build/fuzz-corpus
+build/sanitize/inspect-fuzz build/fuzz-corpus \
+  -max_total_time=30 -max_len=65536 -timeout=5 -rss_limit_mb=1024 -seed=9802
+```
+
+The fuzz driver targets the inspection entry point, signature containers, plist
+and DER. System-installed third-party dependencies were not rebuilt with
+instrumentation, so coverage and sanitizer visibility are strongest in this
+project's own code. A short fuzz run is regression evidence, not an exhaustive
+proof of parser safety.
+
+## Independent references and scope
+
+The system verifier asks codesign for identifier, team, CodeDirectory size/version,
+flags, slot counts, algorithm, every full candidate digest and declared
+entitlements. Failed queries or missing comparison fields produce issues, and
+zero compared slices does not count as a successful run.
+
+The native default corpus uses `/usr/bin/*`, `/usr/lib/*.dylib`, `/usr/libexec/*`,
+`/sbin/*` and `/bin/*`. The old entitlement helper additionally scans
+`/System/Library/CoreServices/*` and uses a different per-file/per-slice comparison
+policy. Its 947/481 counts therefore should not be substituted for the native
+883/883 counts.
+
+Integration fixtures are compiled and signed during the tests. Clean, modified,
+added and removed resources are checked against both the inspector and codesign.
+Separate resource fixtures cover omission/weight/tie rules, nested code, unknown
+digests, parent/leaf symlinks, out-of-bundle paths and capped findings. No test
+requires reading a private file.
+
+## What this does not establish
+
+These checks do not authenticate CMS signatures, verify code pages, evaluate
+requirements, determine OS grants, prove hostile filesystem-race resistance, cover
+every resource-sealer corner case, establish Linux support or guarantee acceptance
+for uses outside these tested contracts. Product boundaries are listed in the README and format
+documentation.
