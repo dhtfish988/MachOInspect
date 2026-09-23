@@ -82,9 +82,8 @@ the existence of CMake files.
 
 ## Scope and provenance
 
-This is a native rewrite of the MIT-licensed
-[machoaudit](https://github.com/dhtfish988/machoaudit), using commit
-`dcd69fcc7475767540a2b496c6415e9adaa83b56` as its functional baseline. Its architecture,
+This is a native rewrite of the MIT-licensed machoaudit baseline, commit
+`dcd69fcc7475767540a2b496c6415e9adaa83b56`. Its architecture,
 implementation, public API, CLI error contract and tests were redesigned. The
 baseline's attribution is retained in [LICENSE](LICENSE); dependency notices are
 in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
