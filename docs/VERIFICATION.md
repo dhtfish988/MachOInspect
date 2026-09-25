@@ -4,11 +4,11 @@ Evidence filenames and workspace-relative paths below refer to local validation 
 
 ## Hosted evidence and owned-binary example
 
-GitHub [run 36086103940](https://github.com/dhtfish988/MachOInspect/actions/runs/36086103940)
-completed successfully for commit `e3f8c78cfe0b096580c21da00f22bb28a3502d11`.
-It ran the Release suite and an independently linked installed-library consumer.
-This is evidence for that exact revision; it does not establish a hosted result
-for later documentation or example changes.
+GitHub [run 36098199519](https://github.com/dhtfish988/MachOInspect/actions/runs/36098199519)
+completed successfully for commit `c38a40e98a4d533c5a7964077c2641bc0b0e232c`.
+It ran the earlier 456-check Release suite, an independently linked installed-library
+consumer and the owned-signing example. This is evidence for that exact revision;
+it predates the optional-resource and unreadable-scan fixes described below.
 
 The new [owned-binary walkthrough](OWNED_BINARY_EXAMPLE.md) was executed locally
 on 2026-09-25 using the existing Release tools. All 14 commands returned their
@@ -18,10 +18,36 @@ no high-severity entitlement observations and the review fixture produced three.
 Both ad-hoc signatures passed `codesign --verify --strict`. The source, plists and
 [recorded reports](../validation/owned-signing-2026-09-25/) are public and contain
 no private target input. The full 456-check matrices were not rerun for this
-example-only change. The workflow now includes the example as a separate step;
-consult the run for its exact commit before claiming a hosted result.
+example-only change. The later hosted run above also passed the example's 14
+expected command statuses, two metadata comparisons, two XML/DER pairs and two
+codesign entitlement comparisons with zero issues.
 
-## Review on 2026-09-25
+## Subsequent re-audit on 2026-09-25
+
+Rebuilt Debug, Release and ASan/UBSan suites each passed **474 checks across five
+native test programs**: 70 core, 50 resource, 92 rule, 204 boundary and 58 macOS
+integration assertions. The 18 added checks cover two newly reproduced defects:
+
+- An absent resource explicitly marked optional by codesign was incorrectly
+  reported as a high-severity missing resource. A freshly compiled and signed
+  owned bundle demonstrates that codesign accepts deletion of its optional
+  localization file; both tools reject changed contents and missing required files.
+- An unreadable regular file was silently skipped during recursive scans, allowing
+  incomplete scans to return success. Persistent read errors now appear beside
+  successful results in JSON and return exit 2. Readable short files remain skipped.
+
+Six optional-resource assertions and two recursive-read assertions failed before
+their respective fixes. All new checks ran on the local non-root macOS account;
+permission checks explicitly report a skip if a privileged account bypasses the
+fixture's read restrictions. No sanitizer diagnostics were observed.
+
+The optional merge policy is conservative when legacy and modern records differ;
+[the report format](FORMAT.md) documents it without claiming complete Apple
+resource-sealer equivalence. [Selected results and transcripts](../validation/re-audit-2026-09-25/)
+identify this patch separately from the earlier 456-check and 442-check records.
+Historical fuzz and system-corpus comparisons were not rerun for these fixes.
+
+## Earlier review on 2026-09-25
 
 Fresh Debug, Release and ASan/UBSan builds each passed **456 checks across five
 native test programs**: 70 core, 40 resource, 92 rule, 204 boundary and 50 macOS

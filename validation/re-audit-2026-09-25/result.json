@@ -1,0 +1,125 @@
+{
+  "date": "2026-09-25",
+  "platform": {
+    "system": "macOS",
+    "version": "26.7",
+    "architecture": "arm64"
+  },
+  "base_commit": "c38a40e98a4d533c5a7964077c2641bc0b0e232c",
+  "scope": "Local validation of the source hashes below, after the optional-resource and recursive-read-error fixes. This does not claim a hosted result for a later commit.",
+  "source_sha256": {
+    "app/command_line.cpp": "71b8d2a138f60cfe50656dba0a21499989f8a97829932fe41a437cb08056e491",
+    "src/bundle/resource_manifest.cpp": "6b3bb5622fffbf441bb5d0a71049eca6c42a3c6bd73fea8eb176f2973545f415",
+    "tests/unit/resource_tests.cpp": "462ee4aa8c653a74b2fa5abfb43e2d5f4c40edc97d9e28b41fc94386edf1f6b1",
+    "tests/integration/macos_contract.cpp": "54814c8160f87ecd05e8d3e87a68cff213bc636428a2ead303ed8677555befbe"
+  },
+  "native_checks_by_program": {
+    "core": 70,
+    "resource": 50,
+    "rule": 92,
+    "boundary": 204,
+    "integration": 58
+  },
+  "runs": {
+    "debug": {
+      "checks": 474,
+      "test_programs": 5,
+      "failed": 0,
+      "skipped": 0,
+      "transcript": "tests-debug.txt"
+    },
+    "release": {
+      "checks": 474,
+      "test_programs": 5,
+      "failed": 0,
+      "skipped": 0,
+      "transcript": "tests-release.txt"
+    },
+    "sanitize": {
+      "checks": 474,
+      "test_programs": 5,
+      "failed": 0,
+      "skipped": 0,
+      "transcript": "tests-sanitize.txt"
+    }
+  },
+  "new_checks": 18,
+  "pre_fix_failed_checks": {
+    "optional_resource": 6,
+    "recursive_read_error": 2
+  },
+  "optional_resource_codesign_comparison": {
+    "intact": {
+      "before": {
+        "codesign_exit": 0,
+        "inspector_exit": 0
+      },
+      "after": {
+        "codesign_exit": 0,
+        "inspector_exit": 0
+      }
+    },
+    "optional-missing": {
+      "before": {
+        "codesign_exit": 0,
+        "inspector_exit": 1
+      },
+      "after": {
+        "codesign_exit": 0,
+        "inspector_exit": 0
+      }
+    },
+    "optional-changed": {
+      "before": {
+        "codesign_exit": 1,
+        "inspector_exit": 1
+      },
+      "after": {
+        "codesign_exit": 1,
+        "inspector_exit": 1
+      }
+    },
+    "required-missing": {
+      "before": {
+        "codesign_exit": 1,
+        "inspector_exit": 1
+      },
+      "after": {
+        "codesign_exit": 1,
+        "inspector_exit": 1
+      }
+    }
+  },
+  "optional_merge_policy": "Absence is allowed only when every record for the path explicitly sets boolean optional=true. This is a conservative inspector policy, not a claim of full Apple sealing equivalence.",
+  "recursive_unreadable": {
+    "before": {
+      "exit": 0,
+      "inputs": 1,
+      "failed_inputs": 0
+    },
+    "after": {
+      "exit": 2,
+      "inputs": 2,
+      "failed_inputs": 1
+    }
+  },
+  "fresh_release_install": {
+    "installed_cli_failed_inputs": 0,
+    "independent_consumer_failed_inputs": 0,
+    "input": "newly built macho-inspect executable"
+  },
+  "owned_signing_example": {
+    "expected_exits_matched": 14,
+    "metadata_compared": 2,
+    "plist_der_pairs": 2,
+    "codesign_entitlements_compared": 2,
+    "issue_count": 0
+  },
+  "release_cli_sha256": "f5d4a15c039ec8db3fd85f9217d0826079b1209eb53d4a30e7f9cfb86466bb3a",
+  "limitations": [
+    "Permission regressions explicitly skip if the running account can read mode-000 files; no such skip occurred in these runs.",
+    "System dependencies were not rebuilt with sanitizers.",
+    "Historical fuzz and system-corpus comparisons were not repeated.",
+    "Linux execution and exhaustive Apple resource-sealer equivalence remain unverified."
+  ]
+}

@@ -1,0 +1,42 @@
+UpdateCTestConfiguration  from :<repository>/build/release/DartConfiguration.tcl
+Parse Config file:<repository>/build/release/DartConfiguration.tcl
+Test project <repository>/build/release
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 2
+    Start 2: resource-contract
+
+2: Test command: <repository>/build/release/inspect-resource-tests
+2: Working Directory: <repository>/build/release
+2: Test timeout computed to be: 1500
+2: FAIL: explicitly optional missing resource is recorded without a finding
+2: FAIL: optional must be a boolean, not a truthy string
+2: FAIL: both manifest records permit optional absence
+2: FAIL: legacy optional record permits absence
+2: 46 resource checks passed; 4 failed
+1/2 Test #2: resource-contract ................***Failed    0.49 sec
+test 5
+    Start 5: macos-integration
+
+5: Test command: <repository>/build/release/inspect-integration "<repository>/build/release/macho-inspect"
+5: Working Directory: <repository>/build/release
+5: Test timeout computed to be: 1500
+5: FAIL: optional localized absence stays visible without a finding
+5: FAIL: optional resource removal does not fail the CLI threshold
+5: 54 integration checks passed; 2 failed
+2/2 Test #5: macos-integration ................***Failed    0.94 sec
+
+0% tests passed, 2 tests failed out of 2
+
+Total Test time (real) =   1.43 sec
+
+The following tests FAILED:
+	  2 - resource-contract (Failed)
+	  5 - macos-integration (Failed)
+Errors while running CTest
+Output from these tests are in: <repository>/build/release/Testing/Temporary/LastTest.log
+Use "--rerun-failed --output-on-failure" to re-run the failed cases verbosely.

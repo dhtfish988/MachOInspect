@@ -42,9 +42,11 @@ build/release/macho-inspect --fail-on high --verbose Example.app
 
 Every report distinguishes structural parsing from verification. JSON retains all
 architecture slices, CodeDirectories, both entitlement declarations, observations
-and errors. Resource inspection detects changed, absent and newly unlisted files,
+and errors. Resource inspection detects changed, missing required and newly unlisted files,
 changed links, and disagreement between the resource manifest and the digest
-recorded by a CodeDirectory. Nested-code identity remains unevaluated.
+recorded by a CodeDirectory. Missing explicitly optional resources remain visible
+in JSON without a discrepancy; optional resources that exist are still checked.
+Nested-code identity remains unevaluated.
 
 Exit codes are `0` for a completed inspection below the configured threshold,
 `1` for a completed inspection reaching `--fail-on`, and `2` for usage, input or
@@ -66,15 +68,17 @@ and link `MachOInspect::macho_inspect`. An independent consumer is provided in
 
 ## Verification
 
-The current local macOS validation contains **456 checks across five native C++ test
+The current local macOS validation contains **474 checks across five native C++ test
 executables**: parser contracts, resource rules, inspection rules, malformed-input
 boundaries and real compiler/codesign/CLI integration. Debug, Release and
 ASan/UBSan runs are recorded in [Verification](docs/VERIFICATION.md).
 
-The Release suite and installed-library consumer also passed on GitHub for
-[`e3f8c78`](https://github.com/dhtfish988/MachOInspect/actions/runs/36086103940).
-That exact run predates the owned-signing walkthrough; its separate local
-results are linked from the example.
+The earlier 456-check Release suite, installed-library consumer and owned-signing
+walkthrough passed on GitHub for
+[`c38a40e`](https://github.com/dhtfish988/MachOInspect/actions/runs/36098199519).
+That exact run predates the latest optional-resource and unreadable-scan fixes;
+their local results are recorded separately in
+[the re-audit evidence](validation/re-audit-2026-09-25/result.json).
 
 The C++ verification tool performs a fresh comparison with Apple's tools:
 

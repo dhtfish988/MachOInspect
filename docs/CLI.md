@@ -19,6 +19,10 @@ A recognized app bundle is inspected as one input even with `-r`. Other
 directories require `-r`. Files explicitly supplied as inputs are inspected even
 if they are not Mach-O; their failures are reported. Duplicate normalized absolute
 input paths are inspected once. Filesystem aliases are not globally deduplicated.
+If a regular file's prefix cannot be read during enumeration, it is passed to the
+input reader so a persistent read failure appears in the report and returns exit
+2 alongside any successfully inspected files. Readable empty or short non-Mach-O
+files are still skipped.
 
 When `Info.plist` declares `CFBundleExecutable`, that exact filename must name a
 regular file in the bundle's executable directory. A missing file, a directory

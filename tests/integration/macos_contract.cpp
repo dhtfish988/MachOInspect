@@ -114,6 +114,8 @@ int main(int argc, char **argv) {
                "key><string>test.macho-inspect.demo</string></dict></plist>");
     auto resource = root / "Demo.app/Contents/Resources/data.txt";
     write_text(resource, "original resource\n");
+    auto localized = resource.parent_path() / "en.lproj/message.txt";
+    write_text(localized, "owned localized text\n");
     auto bundle = root / "Demo.app";
     must({"/usr/bin/codesign", "-f", "-s", "-", bundle.string()});
     check(run({"/usr/bin/codesign", "-v", bundle.string()}).status == 0,
@@ -125,6 +127,30 @@ int main(int argc, char **argv) {
           "clean bundle has no resource findings");
     check(!session.inspect_path(bundle, {false}).resources,
           "resource inspection can be disabled");
+    fs::remove(localized);
+    check(run({"/usr/bin/codesign", "--verify", "--strict", bundle.string()})
+                  .status == 0,
+          "codesign permits removal of its optional localized resource");
+    auto absent_optional = session.inspect_path(bundle);
+    check(!absent_optional.failed() && absent_optional.resources &&
+              absent_optional.resources->observations.empty() &&
+              std::any_of(absent_optional.resources->checks.begin(),
+                          absent_optional.resources->checks.end(),
+                          [](const auto &entry) {
+                            return entry["status"] == "optional-missing";
+                          }),
+          "optional localized absence stays visible without a finding");
+    check(run({cli, "--fail-on", "high", bundle.string()}).status == 0,
+          "optional resource removal does not fail the CLI threshold");
+    write_text(localized, "changed localized text\n");
+    check(run({"/usr/bin/codesign", "--verify", "--strict", bundle.string()})
+                  .status != 0,
+          "codesign rejects changed optional resource contents");
+    check(contains(session.inspect_path(bundle), "resource-hash-mismatch"),
+          "changed optional resource contents remain a finding");
+    check(run({cli, "--fail-on", "high", bundle.string()}).status == 1,
+          "changed optional resource fails the CLI threshold");
+    write_text(localized, "owned localized text\n");
     write_text(resource, "modified\n");
     auto modified = session.inspect_path(bundle);
     check(!modified.failed() && contains(modified, "resource-hash-mismatch"),
@@ -247,13 +273,45 @@ int main(int argc, char **argv) {
     fs::create_directories(scan);
     fs::copy_file(root / "linked", scan / "binary");
     write_text(scan / "text", "not a Mach-O");
+    write_text(scan / "short-text", "hi");
+    write_text(scan / "empty-text", "");
     fs::create_symlink(root / "linked", scan / "alias");
     check(run({cli, scan.string()}).status == 2,
           "directory requires recursive flag");
     auto recursive = run({cli, "-r", "--json", scan.string()});
     check(recursive.status == 0 &&
               ClaimValue::parse(recursive.output)["inputs"].size() == 1,
-          "recursive scan skips text and symlinks");
+          "recursive scan skips text, short files and symlinks");
+    auto unreadable = scan / "unreadable";
+    fs::copy_file(root / "linked", unreadable);
+    fs::permissions(unreadable, fs::perms::none);
+    if (std::ifstream(unreadable, std::ios::binary)) {
+      std::cerr << "SKIP: current user bypasses fixture read permissions\n";
+    } else {
+      auto incomplete = run({cli, "-r", "--json", scan.string()});
+      auto incomplete_json = ClaimValue::parse(incomplete.output);
+      check(incomplete.status == 2 &&
+                incomplete_json["summary"]["failed_inputs"] == 1 &&
+                incomplete_json["inputs"].size() == 2 &&
+                std::any_of(incomplete_json["inputs"].begin(),
+                            incomplete_json["inputs"].end(),
+                            [&](const auto &input) {
+                              return input["path"] == unreadable.string() &&
+                                     input["status"] == "incomplete";
+                            }),
+            "recursive unreadable input preserves partial success and failure");
+      fs::rename(scan / "binary", root / "saved-scan-binary");
+      auto only_unreadable = run({cli, "-r", "--json", scan.string()});
+      auto only_json = ClaimValue::parse(only_unreadable.output);
+      check(only_unreadable.status == 2 &&
+                only_json["summary"]["failed_inputs"] == 1 &&
+                only_json["inputs"].size() == 1 &&
+                only_json["inputs"][0]["path"] == unreadable.string(),
+            "unreadable candidate is reported instead of an empty scan");
+      fs::rename(root / "saved-scan-binary", scan / "binary");
+    }
+    fs::permissions(unreadable, fs::perms::owner_read | fs::perms::owner_write);
+    fs::remove(unreadable);
     fs::create_directories(root / "empty");
     check(run({cli, "-r", (root / "empty").string()}).status == 2,
           "empty scan returns 2");

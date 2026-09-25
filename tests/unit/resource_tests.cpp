@@ -136,11 +136,49 @@ int main() {
           "invalid regular expression is incomplete");
     fs::remove(base / "Resources/item");
     check(has(assess(document), "resource-missing"), "missing sealed file");
+    auto optional = document;
+    optional["files2"]["Resources/item"]["optional"] = true;
+    report = assess(optional);
+    check(report.errors.empty() && report.observations.empty() &&
+              report.checks[0]["status"] == "optional-missing",
+          "explicitly optional missing resource is recorded without a finding");
+    auto required = optional;
+    required["files2"]["Resources/item"]["optional"] = false;
+    check(has(assess(required), "resource-missing"),
+          "explicitly required missing resource is a finding");
+    auto invalid_optional = optional;
+    invalid_optional["files2"]["Resources/item"]["optional"] = "true";
+    check(!assess(invalid_optional).errors.empty(),
+          "optional must be a boolean, not a truthy string");
+    auto combined = optional;
+    combined["files"] = combined["files2"];
+    check(assess(combined).observations.empty(),
+          "both manifest records permit optional absence");
+    combined["files"]["Resources/item"] = hash_value("original");
+    check(has(assess(combined), "resource-missing"),
+          "modern optional record cannot weaken legacy required record");
+    combined = optional;
+    combined["files"] = combined["files2"];
+    combined["files2"]["Resources/item"].erase("optional");
+    check(has(assess(combined), "resource-missing"),
+          "legacy optional record cannot weaken modern required record");
+    auto optional_legacy = optional;
+    optional_legacy["files"] = optional_legacy["files2"];
+    optional_legacy.erase("files2");
+    check(assess(optional_legacy).observations.empty(),
+          "legacy optional record permits absence");
     fs::create_directory(base / "Resources/item");
     check(has(assess(document), "resource-type-changed"),
           "file changed into directory");
+    check(has(assess(optional), "resource-type-changed"),
+          "present optional resource still requires the sealed file type");
     fs::remove(base / "Resources/item");
+    write(base / "Resources/item", "changed");
+    check(has(assess(optional), "resource-hash-mismatch"),
+          "present optional resource still requires the sealed hash");
     write(base / "Resources/item", "original");
+    check(assess(optional).observations.empty(),
+          "present unchanged optional resource passes");
     auto unknown = document;
     unknown["files2"]["Resources/item"]["hash2"] =
         ClaimValue::binary(std::vector<std::uint8_t>(17, 1));

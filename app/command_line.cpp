@@ -34,11 +34,16 @@ void usage() {
          "CMS signatures, code pages and actual OS permissions are not "
          "verified.\n";
 }
-bool is_image(const fs::path &path) {
+bool needs_inspection(const fs::path &path) {
   std::ifstream stream(path, std::ios::binary);
+  // A failed probe cannot establish that this is a non-Mach-O file. Let the
+  // normal input reader report the error alongside the other scan results.
+  if (!stream)
+    return true;
   std::array<std::uint8_t, 4> prefix{};
   stream.read(reinterpret_cast<char *>(prefix.data()), 4);
-  return stream.gcount() == 4 && ImageCatalog::recognises(prefix);
+  return stream.bad() ||
+         (stream.gcount() == 4 && ImageCatalog::recognises(prefix));
 }
 } // namespace
 int main(int argc, char **argv) {
@@ -111,7 +116,7 @@ int main(int argc, char **argv) {
           if (++count > 250000)
             throw DecodeFailure("input", "directory scan limit exceeded");
           auto state = entry.symlink_status();
-          if (fs::is_regular_file(state) && is_image(entry.path()))
+          if (fs::is_regular_file(state) && needs_inspection(entry.path()))
             files.push_back(entry.path());
         }
         std::sort(files.begin(), files.end());

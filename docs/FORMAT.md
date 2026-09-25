@@ -47,6 +47,13 @@ manifest digests must agree. `nested` entries only check existence and explicitl
 report `identity_verification=not_performed`. All per-entry statuses remain in
 JSON; individual discrepancy observations are capped at 40 plus a remainder count.
 
+An absent resource explicitly marked `optional=true` is recorded with status
+`optional-missing` and produces no discrepancy observation. If it exists, its
+recorded digest, type and path-containment checks still apply. The optional flag
+must be a plist boolean. When the same path appears in both `files` and `files2`,
+this inspector conservatively permits absence only if both records mark it
+optional; that merge policy does not claim to reproduce every Apple sealing rule.
+
 Conflicting recorded digests for the same path and algorithm, non-data digest
 values, and non-dictionary rule tables make resource inspection incomplete.
 A supported digest cannot hide an additional unsupported digest: a matching known

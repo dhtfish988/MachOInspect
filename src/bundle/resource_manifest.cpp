@@ -50,6 +50,7 @@ struct ManifestEntry {
   std::map<std::string, std::string> digests;
   std::optional<std::string> link;
   bool nested = false, unknown = false;
+  bool optional = true;
   std::string category() const {
     return link                          ? "symlink"
            : nested                      ? "nested"
@@ -58,6 +59,13 @@ struct ManifestEntry {
   }
 };
 void merge_entry(ManifestEntry &target, const ClaimValue &value) {
+  if (value.is_object() && value.contains("optional") &&
+      !value["optional"].is_boolean())
+    throw DecodeFailure("resources", "resource optional flag is not a boolean");
+  // Conservatively retain a requirement from either manifest table. The usual
+  // codesign localization records mark the resource optional in both tables.
+  target.optional = target.optional && value.is_object() &&
+                    value.value("optional", false);
   auto digest = [&](const ClaimValue &candidate) {
     if (!candidate.is_binary())
       throw DecodeFailure("resources", "resource digest is not binary data");
@@ -184,7 +192,7 @@ ClaimValue inspect_entry(const fs::path &base, const std::string &relative,
   }
   auto state = fs::symlink_status(path);
   if (!fs::exists(state)) {
-    result["status"] = "missing";
+    result["status"] = entry.optional ? "optional-missing" : "missing";
     return result;
   }
   if (entry.link) {
@@ -253,7 +261,7 @@ void add_observations(SealAssessment &report) {
   std::size_t problems = 0;
   for (const auto &check : report.checks) {
     auto status = check["status"].get<std::string>();
-    if (status == "ok")
+    if (status == "ok" || status == "optional-missing")
       continue;
     ++problems;
     if (problems > 40)
