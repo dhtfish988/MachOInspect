@@ -26,6 +26,12 @@ than silently downloading dependencies. The product has no Python runtime.
 
 ## Inspect
 
+For a complete example, [build two owned fixtures and compare their declarations
+with codesign](docs/OWNED_BINARY_EXAMPLE.md). The three selected entitlements are
+false in the control and true in the review fixture. The recorded run reports
+zero versus three high-severity entitlement observations while both ad-hoc
+signatures pass `codesign --verify --strict`.
+
 ```sh
 build/release/macho-inspect /usr/bin/otool
 build/release/macho-inspect Example.app
@@ -64,6 +70,11 @@ The current local macOS validation contains **456 checks across five native C++ 
 executables**: parser contracts, resource rules, inspection rules, malformed-input
 boundaries and real compiler/codesign/CLI integration. Debug, Release and
 ASan/UBSan runs are recorded in [Verification](docs/VERIFICATION.md).
+
+The Release suite and installed-library consumer also passed on GitHub for
+[`e3f8c78`](https://github.com/dhtfish988/MachOInspect/actions/runs/36086103940).
+That exact run predates the owned-signing walkthrough; its separate local
+results are linked from the example.
 
 The C++ verification tool performs a fresh comparison with Apple's tools:
 

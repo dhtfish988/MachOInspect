@@ -66,4 +66,4 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/MachOInspectConfig.cmake
   ${CMAKE_CURRENT_BINARY_DIR}/MachOInspectConfigVersion.cmake DESTINATION lib/cmake/MachOInspect)
 install(FILES README.md LICENSE THIRD_PARTY_NOTICES.md dependencies.lock.json
   DESTINATION share/doc/MachOInspect)
-install(DIRECTORY docs licenses DESTINATION share/doc/MachOInspect)
+install(DIRECTORY docs licenses validation examples DESTINATION share/doc/MachOInspect)

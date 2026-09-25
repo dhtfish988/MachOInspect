@@ -1,0 +1,18 @@
+review
+  [arm64] signature metadata: parsed
+    header flags: ["MH_NOUNDEFS","MH_DYLDLINK","MH_TWOLEVEL","MH_PIE"]
+    signing flags: ["CS_ADHOC","CS_RUNTIME"]
+    execution flags: ["CS_EXECSEG_MAIN_BINARY"]
+    identifier: org.machoinspect.example.review
+    declared team: 
+    CDHash: de6e2a4258eca8bbe0ed6c1e496605e36356b304
+    declared entitlements (der): {"com.apple.security.cs.allow-unsigned-executable-memory":true,"com.apple.security.cs.disable-library-validation":true,"com.apple.security.get-task-allow":true}
+  high [entitlement:com.apple.security.cs.allow-unsigned-executable-memory] Declared entitlement: com.apple.security.cs.allow-unsigned-executable-memory
+    Requests unsigned executable memory. The operating system's actual grant is not established.
+  high [entitlement:com.apple.security.cs.disable-library-validation] Declared entitlement: com.apple.security.cs.disable-library-validation
+    Requests loading libraries without the normal signing-team restriction. The operating system's actual grant is not established.
+  high [entitlement:com.apple.security.get-task-allow] Declared entitlement: com.apple.security.get-task-allow
+    Requests debugger attachment to this process. The operating system's actual grant is not established.
+  medium [adhoc-signature] Ad-hoc signing metadata
+    The ad-hoc flag declares no certificate-backed identity. This inspection does not recompute code pages.
+Structural inspection only. Cryptographic signatures and OS-granted permissions were not verified.

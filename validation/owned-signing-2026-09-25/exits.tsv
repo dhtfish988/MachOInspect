@@ -1,0 +1,15 @@
+case	expected_exit	actual_exit
+compile	0	0
+control-sign	0	0
+control-verify	0	0
+control-metadata	0	0
+control-entitlements	0	0
+control-inspection-text	0	0
+control-inspection-json	0	0
+review-sign	0	0
+review-verify	0	0
+review-metadata	0	0
+review-entitlements	0	0
+review-inspection-text	1	1
+review-inspection-json	1	1
+comparison	0	0

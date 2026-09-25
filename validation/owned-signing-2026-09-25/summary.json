@@ -1,0 +1,93 @@
+{
+  "recorded_at": "2026-09-25T05:11:20Z",
+  "validation_kind": "local owned-fixture example; separate from earlier native matrices",
+  "implementation_base_commit": "e3f8c78cfe0b096580c21da00f22bb28a3502d11",
+  "hosted_run_for_base_commit": "https://github.com/dhtfish988/MachOInspect/actions/runs/36086103940",
+  "hosted_scope_note": "The linked hosted run predates these example and documentation changes. This record does not claim they passed hosted CI.",
+  "host": {
+    "os": "macOS",
+    "version": "26.7",
+    "build": "25G229",
+    "architecture": "arm64",
+    "compiler": "Apple clang 21.0.0 (clang-2100.3.34.2)"
+  },
+  "tool_sha256": {
+    "macho-inspect": "42205d1191f5d43aced82df5940003d252b93a3d6ff961cb2a2e9ed40d6acbea",
+    "inspect-verify-system": "23778e2def270d1cb9909a1c4ec1a30e443e845703a37e03d52905bfb0a818f9"
+  },
+  "example_source_sha256": {
+    "examples/owned-signing/control.plist": "934c9fc5f21f2a6e80ac908cecf97eac7f21c608708144a756e9c4297a6d3274",
+    "examples/owned-signing/fixture.c": "a4397e54d04e2423a331d8cbd860872eae2f1142ce318beaa190ed0a5ba168c9",
+    "examples/owned-signing/review.plist": "588c67aeac0ee364ae86767c15f5b6c8168e40b030ff226aa10b09dc0253e645",
+    "examples/owned-signing/run.sh": "c3d47c201c8cf433785bdadad24db83d8d218599e2904ac26fa8973f433ce274"
+  },
+  "commands_with_expected_exit": 14,
+  "variants": {
+    "control": {
+      "declared_entitlements": {
+        "com.apple.security.cs.allow-unsigned-executable-memory": false,
+        "com.apple.security.cs.disable-library-validation": false,
+        "com.apple.security.get-task-allow": false
+      },
+      "signing_flags": [
+        "CS_ADHOC",
+        "CS_RUNTIME"
+      ],
+      "cdhash": "aa693bda371e33433dcc23ec1e795efb4cee8a31",
+      "high_observations": 0,
+      "inspector_fail_on_high_exit": 0,
+      "codesign_verify_exit": 0,
+      "plist_der_agree": true,
+      "temporary_binary_removed": true,
+      "binary_sha256": "ed064762ad02a7857ef0757350935fe370aeebe32f2607cbeef32fbdf924383d"
+    },
+    "review": {
+      "declared_entitlements": {
+        "com.apple.security.cs.allow-unsigned-executable-memory": true,
+        "com.apple.security.cs.disable-library-validation": true,
+        "com.apple.security.get-task-allow": true
+      },
+      "signing_flags": [
+        "CS_ADHOC",
+        "CS_RUNTIME"
+      ],
+      "cdhash": "de6e2a4258eca8bbe0ed6c1e496605e36356b304",
+      "high_observations": 3,
+      "inspector_fail_on_high_exit": 1,
+      "codesign_verify_exit": 0,
+      "plist_der_agree": true,
+      "temporary_binary_removed": true,
+      "binary_sha256": "d549ec8f594bf25a985b9b4564d2a0512349b3424eaa66cc7995ecec3e87c25f"
+    }
+  },
+  "comparison": {
+    "files_scanned": 2,
+    "macho_files": 2,
+    "slices": 2,
+    "metadata_compared": 2,
+    "plist_der_pairs": 2,
+    "codesign_entitlements_compared": 2,
+    "issue_count": 0,
+    "issues": [],
+    "skipped": []
+  },
+  "existing_output_refused_with_exit": 2,
+  "existing_output_unchanged": true,
+  "published_report_sha256": {
+    "comparison.json": "e08725c64491e742c75d6459bb36fc6347700974d846f154de02a783b28702ec",
+    "control-codesign.txt": "a181fa1d5b8a8a31398c3da0801cb5cba1a8d4150c47623ef57907ac9727315e",
+    "control-entitlements.plist": "1d9a6a1ae5f4706578d3fcfb99601072cb7ce02c721232d4cdfd53abb58ce466",
+    "control-inspection.txt": "4f41adadbe0b7f66dd36e601c4f10bbdd89151d238c5bce96d136a0ac1ae6591",
+    "exits.tsv": "8b3dbfe07eeb88e95e1b63888dcdfc4c4f1170287ca8f0d62e25530e8e5c4dac",
+    "review-codesign.txt": "9c53717a942abb04a6861fffa462a042387a9e3e148eed304ac9a8ebcd74b08c",
+    "review-entitlements.plist": "a81990b5b1651349b3ebebe2a21bee92be7bbb0d54497b648ba3c51da1437ec2",
+    "review-inspection.txt": "1f4b5edf52eea20327e34c1165b60f6d39cc264ca5ed3c09228c06c321143d24"
+  },
+  "normalization": "Only Executable temporary paths in published codesign metadata are replaced by <fixture>/<variant>; inspection text and entitlement XML are unchanged.",
+  "boundaries": [
+    "Fixtures were compiled and inspected, never executed.",
+    "Ad-hoc verification is not certificate-backed identity or OS-granted permission proof.",
+    "No existing app, private source or third-party binary is published.",
+    "No fresh full native matrix or full system corpus claim."
+  ]
+}

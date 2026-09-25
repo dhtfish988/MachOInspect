@@ -2,6 +2,25 @@
 
 Evidence filenames and workspace-relative paths below refer to local validation records. See `../validation/README.md` for the published summary; raw local logs are not included.
 
+## Hosted evidence and owned-binary example
+
+GitHub [run 36086103940](https://github.com/dhtfish988/MachOInspect/actions/runs/36086103940)
+completed successfully for commit `e3f8c78cfe0b096580c21da00f22bb28a3502d11`.
+It ran the Release suite and an independently linked installed-library consumer.
+This is evidence for that exact revision; it does not establish a hosted result
+for later documentation or example changes.
+
+The new [owned-binary walkthrough](OWNED_BINARY_EXAMPLE.md) was executed locally
+on 2026-09-25 using the existing Release tools. All 14 commands returned their
+expected statuses. Two native metadata comparisons, two XML/DER pairs and two
+`codesign` entitlement comparisons agreed, with zero issues. The control produced
+no high-severity entitlement observations and the review fixture produced three.
+Both ad-hoc signatures passed `codesign --verify --strict`. The source, plists and
+[recorded reports](../validation/owned-signing-2026-09-25/) are public and contain
+no private target input. The full 456-check matrices were not rerun for this
+example-only change. The workflow now includes the example as a separate step;
+consult the run for its exact commit before claiming a hosted result.
+
 ## Review on 2026-09-25
 
 Fresh Debug, Release and ASan/UBSan builds each passed **456 checks across five
@@ -37,7 +56,8 @@ Date: 2026-09-23. Host: macOS 26.7 (25G229), arm64. Product builds use Apple cla
 
 The evidence directory in this workspace is `../evidence/machoaudit/`. It contains
 build/test logs, corpus comparison JSON, the baseline inventory and final artifact
-metadata. Claims below concern these local runs; there has been no hosted CI run.
+metadata. Claims in this initial-validation section concern the local runs on
+2026-09-23. Later hosted validation is identified separately above.
 
 ## Recorded checks
 

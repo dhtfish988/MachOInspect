@@ -1,0 +1,12 @@
+control
+  [arm64] signature metadata: parsed
+    header flags: ["MH_NOUNDEFS","MH_DYLDLINK","MH_TWOLEVEL","MH_PIE"]
+    signing flags: ["CS_ADHOC","CS_RUNTIME"]
+    execution flags: ["CS_EXECSEG_MAIN_BINARY"]
+    identifier: org.machoinspect.example.control
+    declared team: 
+    CDHash: aa693bda371e33433dcc23ec1e795efb4cee8a31
+    declared entitlements (der): {"com.apple.security.cs.allow-unsigned-executable-memory":false,"com.apple.security.cs.disable-library-validation":false,"com.apple.security.get-task-allow":false}
+  medium [adhoc-signature] Ad-hoc signing metadata
+    The ad-hoc flag declares no certificate-backed identity. This inspection does not recompute code pages.
+Structural inspection only. Cryptographic signatures and OS-granted permissions were not verified.

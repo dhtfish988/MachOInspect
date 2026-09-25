@@ -46,6 +46,10 @@ jobs:
           cmake -S examples/library-consumer -B build/consumer -G Ninja -DCMAKE_PREFIX_PATH="$PWD/build/installed"
           cmake --build build/consumer --parallel 2
           build/consumer/inspect-consumer /usr/bin/otool | tee build/ci-evidence/consumer.txt
+      - name: Compare owned signing fixtures with codesign
+        run: |
+          set -o pipefail
+          bash examples/owned-signing/run.sh build/release build/ci-evidence/owned-signing 2>&1 | tee build/ci-evidence/owned-signing-run.txt
       - name: Save verification logs
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

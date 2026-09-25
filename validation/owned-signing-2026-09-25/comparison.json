@@ -1,0 +1,11 @@
+{
+  "files_scanned": 2,
+  "macho_files": 2,
+  "slices": 2,
+  "metadata_compared": 2,
+  "plist_der_pairs": 2,
+  "codesign_entitlements_compared": 2,
+  "issue_count": 0,
+  "issues": [],
+  "skipped": []
+}
