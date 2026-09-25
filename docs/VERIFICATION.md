@@ -2,6 +2,35 @@
 
 Evidence filenames and workspace-relative paths below refer to local validation records. See `../validation/README.md` for the published summary; raw local logs are not included.
 
+## Review on 2026-09-25
+
+Fresh Debug, Release and ASan/UBSan builds each passed **456 checks across five
+native test programs**: 70 core, 40 resource, 92 rule, 204 boundary and 50 macOS
+integration assertions. All three runs completed with zero test failures; the
+instrumented run produced no sanitizer report. Evidence is stored locally under
+`evidence/review-2026-09-25/MachOInspect/` in the surrounding work area.
+
+Fourteen resource and bundle regressions were added. Ten failed against the
+pre-fix source, demonstrating that:
+
+- A missing or incorrectly typed declared executable could silently select an
+  unrelated Mach-O from the same bundle.
+- Conflicting, incorrectly typed or additional unsupported resource digests could
+  be discarded while a remaining digest was reported as matching.
+- Malformed rule tables could be ignored, and legacy-only rules did not detect
+  newly unlisted files.
+
+The fixes preserve exact declared-executable selection, reject contradictory or
+malformed digest/rule records, retain unsupported-digest findings and evaluate legacy
+rules when modern rules are absent. The remaining regressions ensure valid
+declarations, identical duplicate digests and weighted omissions still work.
+These tests use synthetic temporary bundles. A fresh Release installation and
+independent `find_package` consumer both inspected the newly built product
+executable successfully. Earlier fuzz and system-corpus
+results below are historical validation and were not repeated for this patch.
+
+## Initial validation on 2026-09-23
+
 Date: 2026-09-23. Host: macOS 26.7 (25G229), arm64. Product builds use Apple clang
 21.0.0, CMake 4.3.1 and Ninja 1.13.2. The ASan/UBSan and libFuzzer build uses LLVM
 23.1.1 because the installed Apple toolchain has no libFuzzer runtime archive.
@@ -26,7 +55,7 @@ metadata. Claims below concern these local runs; there has been no hosted CI run
 | Independent installed-library consumer | Configured, linked and inspected `/usr/bin/otool` successfully |
 | Linux build/runtime | OPEN; no Linux runner was available |
 
-The final suites contain 70 core, 26 resource, 92 rule, 204 boundary and 50
+The initial suites contained 70 core, 26 resource, 92 rule, 204 boundary and 50
 integration assertions. The scenario inventory in `BASELINE_COVERAGE.md` maps
 131 baseline source test functions (134 parameterized cases) to these suites.
 

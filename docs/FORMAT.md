@@ -46,3 +46,11 @@ Each entry records its path, kind and comparison status. All understood recorded
 manifest digests must agree. `nested` entries only check existence and explicitly
 report `identity_verification=not_performed`. All per-entry statuses remain in
 JSON; individual discrepancy observations are capped at 40 plus a remainder count.
+
+Conflicting recorded digests for the same path and algorithm, non-data digest
+values, and non-dictionary rule tables make resource inspection incomplete.
+A supported digest cannot hide an additional unsupported digest: a matching known
+digest still leaves that entry `unsupported`. When a manifest supplies only
+legacy `rules`, those rules determine which additional files should be sealed.
+The existing documented approximation for combined legacy and modern rules is
+unchanged.

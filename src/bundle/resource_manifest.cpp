@@ -60,13 +60,18 @@ struct ManifestEntry {
 void merge_entry(ManifestEntry &target, const ClaimValue &value) {
   auto digest = [&](const ClaimValue &candidate) {
     if (!candidate.is_binary())
-      return;
+      throw DecodeFailure("resources", "resource digest is not binary data");
     const auto &bytes = candidate.get_binary();
     auto algorithm = digest_algorithm(bytes.size());
     if (algorithm.empty())
       target.unknown = true;
-    else
-      target.digests.try_emplace(algorithm, to_hex(bytes));
+    else {
+      auto encoded = to_hex(bytes);
+      const auto [entry, inserted] = target.digests.try_emplace(algorithm, encoded);
+      if (!inserted && entry->second != encoded)
+        throw DecodeFailure("resources", "conflicting " + algorithm +
+                                             " digests for one resource");
+    }
   };
   if (value.is_binary()) {
     digest(value);
@@ -94,7 +99,7 @@ struct ManifestRule {
 std::vector<ManifestRule> compile_rules(const ClaimValue &table) {
   std::vector<ManifestRule> result;
   if (!table.is_object())
-    return result;
+    throw DecodeFailure("resources", "resource rule table is not a dictionary");
   for (auto item = table.begin(); item != table.end(); ++item) {
     auto body = item.value();
     if (body.is_boolean())
@@ -223,6 +228,8 @@ ClaimValue inspect_entry(const fs::path &base, const std::string &relative,
       break;
     }
   }
+  if (result["status"] == "ok" && entry.unknown)
+    result["status"] = "unsupported";
   return result;
 }
 void add_observations(SealAssessment &report) {
@@ -318,16 +325,20 @@ BundleDescriptor::discover(const fs::path &root) {
     bundle.flat = flat;
     bundle.manifest = bundle.content / "_CodeSignature/CodeResources";
     auto folder = flat ? fs::path(".") : fs::path("MacOS");
-    if (metadata.contains("CFBundleExecutable") &&
-        metadata["CFBundleExecutable"].is_string()) {
+    if (metadata.contains("CFBundleExecutable")) {
+      if (!metadata["CFBundleExecutable"].is_string())
+        throw DecodeFailure("bundle", "CFBundleExecutable is not a string");
       auto name = metadata["CFBundleExecutable"].get<std::string>();
       if (name.empty() || name == "." || name == ".." ||
           name.find_first_of("/\\") != std::string::npos ||
           name.find('\0') != std::string::npos)
         throw DecodeFailure("bundle", "invalid CFBundleExecutable filename");
       auto candidate = BundleAccess::resolve(bundle.content, folder / name);
-      if (fs::is_regular_file(candidate))
-        bundle.executable = candidate;
+      if (!fs::is_regular_file(candidate))
+        throw DecodeFailure("bundle",
+                            "declared bundle executable is missing or is not a regular file: " +
+                                name);
+      bundle.executable = candidate;
     }
     if (bundle.executable.empty()) {
       auto directory = BundleAccess::resolve(bundle.content, folder);
@@ -423,8 +434,12 @@ ResourceManifest::inspect(const BundleDescriptor &bundle,
       auto name = relative.generic_string();
       if (entries.contains(name))
         continue;
-      if (treatment(name, new_rules) == "hash" &&
-          (old_rules.empty() || treatment(name, old_rules) == "hash"))
+      const bool sealed = document.contains("rules2")
+                              ? treatment(name, new_rules) == "hash" &&
+                                    (old_rules.empty() ||
+                                     treatment(name, old_rules) == "hash")
+                              : treatment(name, old_rules) == "hash";
+      if (sealed)
         unlisted.push_back(name);
     }
     std::sort(unlisted.begin(), unlisted.end());

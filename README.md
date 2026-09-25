@@ -60,7 +60,7 @@ and link `MachOInspect::macho_inspect`. An independent consumer is provided in
 
 ## Verification
 
-The local macOS validation contains **442 checks across five native C++ test
+The current local macOS validation contains **456 checks across five native C++ test
 executables**: parser contracts, resource rules, inspection rules, malformed-input
 boundaries and real compiler/codesign/CLI integration. Debug, Release and
 ASan/UBSan runs are recorded in [Verification](docs/VERIFICATION.md).

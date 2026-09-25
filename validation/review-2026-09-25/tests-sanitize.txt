@@ -1,0 +1,52 @@
+UpdateCTestConfiguration  from :<source>/DartConfiguration.tcl
+Test project <source>/build/sanitize
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 1
+    Start 1: core-contract
+
+1: Test command: <source>/build/sanitize/inspect-tests
+1: Working Directory: <source>/build/sanitize
+1: Test timeout computed to be: 10000000
+1: 70 checks passed; 0 failed
+1/5 Test #1: core-contract ....................   Passed    0.60 sec
+test 2
+    Start 2: resource-contract
+
+2: Test command: <source>/build/sanitize/inspect-resource-tests
+2: Working Directory: <source>/build/sanitize
+2: Test timeout computed to be: 10000000
+2: 40 resource checks passed; 0 failed
+2/5 Test #2: resource-contract ................   Passed    0.61 sec
+test 3
+    Start 3: rule-contract
+
+3: Test command: <source>/build/sanitize/inspect-rule-tests
+3: Working Directory: <source>/build/sanitize
+3: Test timeout computed to be: 10000000
+3: 92 rule checks passed; 0 failed
+3/5 Test #3: rule-contract ....................   Passed    0.82 sec
+test 4
+    Start 4: boundary-contract
+
+4: Test command: <source>/build/sanitize/inspect-boundary-tests
+4: Working Directory: <source>/build/sanitize
+4: Test timeout computed to be: 10000000
+4: 204 boundary checks passed; 0 failed
+4/5 Test #4: boundary-contract ................   Passed    0.55 sec
+test 5
+    Start 5: macos-integration
+
+5: Test command: <source>/build/sanitize/inspect-integration "<source>/build/sanitize/macho-inspect"
+5: Working Directory: <source>/build/sanitize
+5: Test timeout computed to be: 10000000
+5: 50 integration checks passed; 0 failed
+5/5 Test #5: macos-integration ................   Passed    2.93 sec
+
+100% tests passed, 0 tests failed out of 5
+
+Total Test time (real) =   5.51 sec

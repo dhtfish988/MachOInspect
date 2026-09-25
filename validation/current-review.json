@@ -1,0 +1,78 @@
+{
+  "date": "2026-09-25",
+  "baseline_commit": "a05d369",
+  "variants": {
+    "debug": {
+      "check_counts": [
+        70,
+        40,
+        92,
+        204,
+        50
+      ],
+      "total_checks": 456,
+      "test_programs": 5,
+      "failures": 0,
+      "log": "tests-debug.txt"
+    },
+    "release": {
+      "check_counts": [
+        70,
+        40,
+        92,
+        204,
+        50
+      ],
+      "total_checks": 456,
+      "test_programs": 5,
+      "failures": 0,
+      "log": "tests-release.txt"
+    },
+    "sanitize": {
+      "check_counts": [
+        70,
+        40,
+        92,
+        204,
+        50
+      ],
+      "total_checks": 456,
+      "test_programs": 5,
+      "failures": 0,
+      "log": "tests-sanitize.txt"
+    }
+  },
+  "new_regressions": 14,
+  "pre_fix_resource_checks_passed": 30,
+  "pre_fix_resource_checks_failed": 10,
+  "installed_cli_passed": true,
+  "installed_consumer_passed": true,
+  "inputs": "owned synthetic temporary bundles and freshly built product executable",
+  "source_sha256": {
+    "src/bundle/resource_manifest.cpp": "bb57da6474b06249e2ff6d0a585a5789d1275846b4779029c2e540a75144bc44",
+    "tests/unit/resource_tests.cpp": "58101ebe1f2c012016287bcbd8e665f3cd64dbe6ca2dd65e6b7237a64fb35d4d"
+  },
+  "limits": [
+    "No fresh system-corpus or fuzz claim",
+    "No Linux or Windows execution",
+    "No CMS authentication or code-page verification",
+    "Resource-rule approximation and filesystem-snapshot limits remain"
+  ],
+  "evidence_note": "Local verification on macOS arm64. Published test transcripts replace absolute workspace paths with placeholders. Original transcript hashes, where present, refer to the private local record.",
+  "published_test_logs": {
+    "debug": {
+      "path": "review-2026-09-25/tests-debug.txt",
+      "sha256": "af5e83e9eceff9e1b857adc993393bc17e8023744de94d587eb79d1f6e990837"
+    },
+    "release": {
+      "path": "review-2026-09-25/tests-release.txt",
+      "sha256": "e03d3a6a5baa232973451175bfa13b32ba179c97e8be2d39f47fa806ea7fb924"
+    },
+    "sanitize": {
+      "path": "review-2026-09-25/tests-sanitize.txt",
+      "sha256": "4e8bf45ff56691d7d7d6c262b8ce9715c293bd8d8142dbdace84eab92da8418e"
+    }
+  },
+  "hosted_ci_url": "https://github.com/dhtfish988/MachOInspect/actions/workflows/verify.yml",
+  "hosted_ci_note": "Check the Actions result for the exact Git commit; local results do not imply a hosted run passed."
+}

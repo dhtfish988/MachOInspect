@@ -146,6 +146,43 @@ int main() {
         ClaimValue::binary(std::vector<std::uint8_t>(17, 1));
     check(has(assess(unknown), "resource-hash-unsupported"),
           "unsupported digest size");
+    unknown["files2"]["Resources/item"]["hash"] = hash_value("original");
+    check(has(assess(unknown), "resource-hash-unsupported"),
+          "known digest does not hide unsupported additional digest");
+    auto conflicting = document;
+    conflicting["files"]["Resources/item"] = hash_value("different");
+    check(!assess(conflicting).errors.empty(),
+          "conflicting digests across resource tables rejected");
+    conflicting["files"]["Resources/item"] = hash_value("original");
+    check(assess(conflicting).observations.empty(),
+          "identical digests across resource tables accepted");
+    conflicting = document;
+    conflicting["files2"]["Resources/item"]["hash"] = hash_value("different");
+    check(!assess(conflicting).errors.empty(),
+          "conflicting same-algorithm hashes in one record rejected");
+    auto wrong_type = document;
+    wrong_type["files2"]["Resources/item"]["hash"] = "not binary data";
+    check(!assess(wrong_type).errors.empty(),
+          "valid hash does not hide malformed additional hash");
+    for (const auto *name : {"rules", "rules2"}) {
+      auto wrong_rules = document;
+      wrong_rules[name] = ClaimValue::array({true});
+      check(!assess(wrong_rules).errors.empty(),
+            std::string(name) + " must be a dictionary");
+    }
+    auto legacy = document;
+    legacy["rules"] = legacy["rules2"];
+    legacy.erase("rules2");
+    legacy["files"] = legacy["files2"];
+    legacy.erase("files2");
+    write(base / "Resources/legacy-unlisted", "later");
+    check(has(assess(legacy), "resource-unsealed"),
+          "legacy-only seal rules detect unlisted files");
+    legacy["rules"]["^Resources/legacy-unlisted$"] = {
+        {"omit", true}, {"weight", 30}};
+    check(!has(assess(legacy), "resource-unsealed"),
+          "legacy-only seal rules honor omission weights");
+    fs::remove(base / "Resources/legacy-unlisted");
     auto symbolic = document;
     symbolic["files2"]["Resources/link"] = {{"symlink", "item"}};
     fs::create_symlink("item", base / "Resources/link");
@@ -221,6 +258,32 @@ int main() {
     write(bundle.manifest, "broken plist");
     check(!ResourceManifest::inspect(bundle, {}).errors.empty(),
           "malformed resource manifest is an error");
+    // A distinct synthetic Mach-O must not substitute for a missing declared
+    // bundle executable. No host executable or private input is needed.
+    std::string thin(32, '\0');
+    thin[0] = char(0xcf);
+    thin[1] = char(0xfa);
+    thin[2] = char(0xed);
+    thin[3] = char(0xfe);
+    thin[4] = 12;
+    thin[7] = 1;
+    thin[12] = 2;
+    write(base / "MacOS/helper", thin);
+    auto inspect_bundle = [&](const ClaimValue &info) {
+      save(base / "Info.plist", info);
+      return InspectionSession().inspect_path(bundle.root, {false});
+    };
+    check(inspect_bundle({{"CFBundleExecutable", "missing"}}).failed(),
+          "declared missing executable cannot fall back to another image");
+    fs::create_directory(base / "MacOS/folder");
+    check(inspect_bundle({{"CFBundleExecutable", "folder"}}).failed(),
+          "declared directory executable cannot fall back to another image");
+    check(inspect_bundle({{"CFBundleExecutable", true}}).failed(),
+          "non-string executable declaration cannot fall back");
+    check(!inspect_bundle({{"CFBundleExecutable", "helper"}}).failed(),
+          "declared synthetic executable inspected");
+    check(!inspect_bundle(ClaimValue::object()).failed(),
+          "missing executable declaration retains documented discovery");
     std::cout << passed << " resource checks passed; " << failed << " failed\n";
     return failed ? 1 : 0;
   } catch (const std::exception &error) {

@@ -20,6 +20,12 @@ directories require `-r`. Files explicitly supplied as inputs are inspected even
 if they are not Mach-O; their failures are reported. Duplicate normalized absolute
 input paths are inspected once. Filesystem aliases are not globally deduplicated.
 
+When `Info.plist` declares `CFBundleExecutable`, that exact filename must name a
+regular file in the bundle's executable directory. A missing file, a directory
+or a non-string declaration is an inspection error; another Mach-O is never
+substituted. Deterministic Mach-O discovery is used only when the declaration is
+absent.
+
 Exit status priority is:
 
 1. `2`: bad arguments, no applicable inputs, or any input/parse/inspection error.
